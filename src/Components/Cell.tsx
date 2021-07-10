@@ -13,6 +13,17 @@ const emojis = {
     detonated: '💥',
 };
 
+const getBackgroundColor = (status: CellStatus): string => {
+    switch (status) {
+        case 'dug':
+            return '#DEB887';
+        case 'detonated':
+            return '#000000';
+        default:
+            return '#90ee90';
+    }
+};
+
 const cellStyle = (status: CellStatus): React.CSSProperties => ({
     width: '40px',
     height: '40px',
@@ -21,8 +32,7 @@ const cellStyle = (status: CellStatus): React.CSSProperties => ({
     border: '1px solid black',
     boxSizing: 'border-box',
     cursor: 'pointer',
-    backgroundColor:
-        status === 'untouched' || status === 'flagged' ? '#ccc' : 'undefined',
+    backgroundColor: getBackgroundColor(status),
 });
 
 export const Cell: React.FunctionComponent<CellProps> = props => {
