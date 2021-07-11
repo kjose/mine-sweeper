@@ -1,10 +1,14 @@
 export type CellStatus = 'untouched' | 'flagged' | 'dug' | 'detonated';
-export type CellAction = 'dig' | 'flag';
+export type CellAction = {
+    name: 'dig' | 'flag';
+    adjacentBombsCellsNumber?: number;
+};
 
 export class Cell {
     private _bomb: boolean;
     private _flagged: boolean;
     private _dug: boolean;
+    public _adjacentBombsCellsNumber?: number;
 
     static withBomb(): Cell {
         return new Cell(true, false, false);
@@ -14,10 +18,12 @@ export class Cell {
         return new Cell(false, false, false);
     }
 
-    constructor(withBomb: boolean, flagged: boolean, dug: boolean) {
+    constructor(withBomb: boolean, flagged: boolean, dug: boolean,
+                adjacentBombsCellsNumber?: number) {
         this._bomb = withBomb;
         this._flagged = flagged;
         this._dug = dug;
+        this._adjacentBombsCellsNumber = adjacentBombsCellsNumber;
     }
 
     flag(): Cell {
@@ -27,8 +33,8 @@ export class Cell {
         return new Cell(this._bomb, !this._flagged, this._dug);
     }
 
-    dig(): Cell {
-        return new Cell(this._bomb, false, true);
+    dig(adjacentCellsWithBombsCount?: number): Cell {
+        return new Cell(this._bomb, false, true, adjacentCellsWithBombsCount);
     }
 
     get detonated(): boolean {
@@ -41,6 +47,10 @@ export class Cell {
 
     get dug(): boolean {
         return this._dug;
+    }
+
+    get bomb(): boolean {
+        return this._bomb;
     }
 
     get status(): CellStatus {

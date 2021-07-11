@@ -18,7 +18,7 @@ describe(Grid, () => {
                 unexpected,
             ], 1);
 
-            expect(grid.cellByCoodinates(0, 0)).toBe(expected);
+            expect(grid.cellByCoordinates(0, 0)).toBe(expected);
         });
 
         test('it get the last cell in grid when asking for x:3 y:1', () => {
@@ -35,7 +35,7 @@ describe(Grid, () => {
                 expected,
             ], 1);
 
-            const cell = grid.cellByCoodinates(3, 1);
+            const cell = grid.cellByCoordinates(3, 1);
             expect(cell).toBe(expected);
         });
     });

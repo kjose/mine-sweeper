@@ -4,8 +4,8 @@ export type Cells = Array<Cell>;
 
 export class Grid {
     [key: number]: number;
-    private _column: number;
-    private _cells: Cells;
+    public _column: number;
+    public _cells: Cells;
     private _minesCount: number;
 
     static generate(row: number, column: number, minesCount: number): Grid {
@@ -24,7 +24,7 @@ export class Grid {
             cells[rand] = cells[index];
             cells[index] = cell;
         }
-
+console.log(cells);
         return new Grid(column, cells, minesCount);
     }
 
@@ -59,7 +59,7 @@ export class Grid {
         return this._cells[index];
     }
 
-    cellByCoodinates(x: number, y: number): Cell | undefined {
+    cellByCoordinates(x: number, y: number): Cell | undefined {
         return this._cells[this._column * y + x];
     }
 
@@ -67,7 +67,8 @@ export class Grid {
         const cells = [...this._cells];
         const cell = cells[cellIndex];
 
-        cells[cellIndex] = cell[action]();
+        const { name, adjacentBombsCellsNumber } = action;
+        cells[cellIndex] = cell[name](adjacentBombsCellsNumber);
         return new Grid(this._column, cells, this._minesCount);
     }
 
@@ -79,18 +80,14 @@ export class Grid {
     };
 
     isVictorious = () => {
-        let flagsNumber = 0;
+        // Number of dig cells and flagged
+        const flagsNumber = this._cells.filter((cell) => cell.dug === false && cell.flagged === true).length;
+        // Number of dig cells and unflagged
+        let digNumber = this._cells.filter((cell) => cell.dug === false && cell.flagged === false).length;
 
         for (let cell of this) {
-            if (cell.dug === false && cell.flagged === true) {
-                flagsNumber++;
-            }
-
-            if (
-                (cell.dug === false && cell.flagged === false) ||
-                cell.detonated === true ||
-                flagsNumber > this._minesCount
-            ) {
+            if (cell.detonated === true || flagsNumber > this._minesCount ||
+                ((digNumber + flagsNumber) > this._minesCount)) {
                 return false;
             }
         }
